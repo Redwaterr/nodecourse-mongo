@@ -38,13 +38,13 @@ app.get("/users",(req,res) => {
 app.get("/users/:id",(req,res) => {
     var id = req.params.id;
     if(!ObjectID.isValid(id)){
-        return res.send("Invalid ıd");
+        return res.send("Invalid id");
     }
     user.findById(id).then((user)=>{
         if(!user){
             return res.send("User ID not found");
         }
-        res.send(JSON.stringify(user.name,undefined,2));
+        res.send(JSON.stringify(user,undefined,2));
     },(err) => {
         if(err){
             res.send("404");

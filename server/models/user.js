@@ -7,9 +7,12 @@ var user = mongoose.model("User",{    //MOdel oluşturuyoruz.
         required:true,
         minlenght:1,
         trim:true
-    },username:{
+    },surname:{
         type:String,
         minlenght:1,
+    },
+    age:{
+        type:Number
     },
     completedAt:{
         default:null,

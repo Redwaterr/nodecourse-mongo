@@ -14,7 +14,9 @@ app.use(bodyParser.json());
 
 app.post("/users",(req,res) => {
      var newUser = new user({
-         name:req.body.name
+         name:req.body.name,
+         age:req.body.age,
+         surname:req.body.surname
      });
 
      newUser.save().then((doc) => {

@@ -4,6 +4,8 @@ var bodyParser = require("body-parser");
 var {mongoose} = require("./db/mongoose");
 var {user} = require("./models/user");
 
+const {ObjectID} = require("mongodb");
+
 var app = express();
 
 app.use(bodyParser.json());
@@ -26,6 +28,23 @@ app.get("/users",(req,res) => {
         res.send({users});
     },(e) => {
         res.status(400).send(e);
+    });
+});
+
+app.get("/users/:id",(req,res) => {
+    var id = req.params.id;
+    if(!ObjectID.isValid(id)){
+        return res.send("Invalid ıd");
+    }
+    user.findById(id).then((user)=>{
+        if(!user){
+            return res.send("User ID not found");
+        }
+        res.send(JSON.stringify(user.name,undefined,2));
+    },(err) => {
+        if(err){
+            res.send("404");
+        }
     });
 });
 

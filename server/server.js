@@ -1,3 +1,5 @@
+const _ = require("lodash");
+
 var express = require("express");
 var bodyParser = require("body-parser");
 
@@ -12,7 +14,7 @@ const port = process.env.PORT || 3000;   //Herokuda çalışması için.
 
 app.use(bodyParser.json());
 
-app.post("/users",(req,res) => {
+app.post("/users",(req,res) => {     //YENİ ÜYE EKLİYORUZ.
      var newUser = new user({
          name:req.body.name,
          age:req.body.age,
@@ -52,12 +54,10 @@ app.get("/users/:id",(req,res) => {   // GET İLE URL YANINA ID YAZINCA ONU BULU
     });
 });
 
-app.listen(port,() => {
-    console.log("Started on port ",port);
-});
 
 
-app.delete("/users/:id",(req,res) => {
+
+app.delete("/users/:id",(req,res) => {   // İD Yİ BULUP SİLMESİ İÇİN.
     var id = req.params.id;
     if(!ObjectID.isValid(id)){
         return res.send("Invalid id.");
@@ -72,7 +72,38 @@ app.delete("/users/:id",(req,res) => {
             res.send("404");
         }
     });
+});
 
+app.patch("/users/:id",(req,res) => {   // İD Yİ BULUP UPDATE ETMESİ İÇİN.
+    var id = req.params.id;
+    var body = _.pick(req.body,["age","name","surname","completed"]);
+
+    if(!ObjectID.isValid(id)){
+        return res.send("Invalid id.");
+    }
+
+    if(_.isBoolean(body.completed) && body.completed){
+        body.completedAt = new Date().getTime();
+    }else {
+        body.completed = false;
+        body.completedAt = null;
+    }
+
+    user.findByIdAndUpdate(id,{$set : body},{new:true}).then((user) => {
+        if(!user){
+            return res.send("404");
+        }
+        res.send({user});
+
+    }).catch((e) => {
+        res.send("404");
+    });
+
+});
+
+
+app.listen(port,() => {
+    console.log("Started on port ",port);
 });
 
 module.exports = {app};

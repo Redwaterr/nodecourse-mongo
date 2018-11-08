@@ -14,6 +14,10 @@ var user = mongoose.model("User",{    //MOdel oluşturuyoruz.
     age:{
         type:Number
     },
+    completed:{
+        default:false,
+        type:Boolean
+    },
     completedAt:{
         default:null,
         type:Number

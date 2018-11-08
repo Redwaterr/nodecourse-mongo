@@ -27,7 +27,7 @@ app.post("/users",(req,res) => {
 });
 
 
-app.get("/users",(req,res) => {
+app.get("/users",(req,res) => {   // /USERS YAZINCA USERSLARI LİSTELEMESİ İÇİN
     user.find().then((users) => {
         res.send({users});
     },(e) => {
@@ -35,8 +35,8 @@ app.get("/users",(req,res) => {
     });
 });
 
-app.get("/users/:id",(req,res) => {
-    var id = req.params.id;
+app.get("/users/:id",(req,res) => {   // GET İLE URL YANINA ID YAZINCA ONU BULUP RESLEMESİ İÇİN.
+    var id = req.params.id; //gelen parametreyi yakalıyor.
     if(!ObjectID.isValid(id)){
         return res.send("Invalid id");
     }
@@ -56,5 +56,23 @@ app.listen(port,() => {
     console.log("Started on port ",port);
 });
 
+
+app.delete("/users/:id",(req,res) => {
+    var id = req.params.id;
+    if(!ObjectID.isValid(id)){
+        return res.send("Invalid id.");
+    }
+    user.findByIdAndRemove(id).then((user) => {
+        if(!user) {
+            return res.send("USER ID NOT FOUND");
+        }
+        res.send(JSON.stringify(user,undefined,2));
+    },(err) => {
+        if(err) {
+            res.send("404");
+        }
+    });
+
+});
 
 module.exports = {app};

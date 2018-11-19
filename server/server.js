@@ -1,10 +1,11 @@
 const _ = require("lodash");
 
-var express = require("express");
-var bodyParser = require("body-parser");
+const express = require("express");
+const bodyParser = require("body-parser");
 
-var {mongoose} = require("./db/mongoose");
-var {user} = require("./models/user");
+const {mongoose} = require("./db/mongoose");
+const {user} = require("./models/user");
+const {auth} = require("./models/auth");
 
 const {ObjectID} = require("mongodb");
 
@@ -15,11 +16,7 @@ const port = process.env.PORT || 3000;   //Herokuda çalışması için.
 app.use(bodyParser.json());
 
 app.post("/users",(req,res) => {     //YENİ ÜYE EKLİYORUZ.
-     var newUser = new user({
-         name:req.body.name,
-         age:req.body.age,
-         surname:req.body.surname
-     });
+    var newUser = _.pick(req.body,["name","surname","age"]);
 
      newUser.save().then((doc) => {
         res.send(doc);
@@ -100,6 +97,23 @@ app.patch("/users/:id",(req,res) => {   // İD Yİ BULUP UPDATE ETMESİ İÇİN.
     });
 
 });
+
+// AUTHENTİCATİON İÇİN 
+
+app.post("/auth",(req,res)=> {
+    var body = _.pick(req.body,["email","password"]);
+    var newAuth = new auth(body);
+
+
+    newAuth.save().then(() => {
+        return newAuth.generateAuthToken();
+    }).then((token) => {
+        res.header("x-auth",token).send(newAuth);
+    }).catch((e) => {
+        res.status(400).send(e);
+    })
+});
+
 
 
 app.listen(port,() => {

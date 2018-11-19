@@ -1,6 +1,6 @@
 var mongoose = require("mongoose");
 
 mongoose.Promise = global.Promise;
-mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/SignIn");
+mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/calisma");
 
-module.exports = {mongoose};
+module.exports={mongoose};
